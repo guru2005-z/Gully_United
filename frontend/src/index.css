@@ -1,0 +1,333 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+@import "tailwindcss";
+
+:root {
+  --bg-dark: #090c12;
+  --bg-card: #111622;
+  --bg-card-hover: #171e2e;
+  --bg-glass: rgba(17, 22, 34, 0.78);
+  
+  --neon-green: #8FFF00;
+  --neon-green-glow: rgba(143, 255, 0, 0.35);
+  --neon-green-subtle: rgba(143, 255, 0, 0.12);
+  
+  --text-main: #FFFFFF;
+  --text-muted: #94A3B8;
+  --text-dim: #64748B;
+  
+  --border-color: rgba(255, 255, 255, 0.08);
+  --border-neon: rgba(143, 255, 0, 0.3);
+  
+  --color-available: #8FFF00;
+  --color-holding: #F59E0B;
+  --color-booked: #EF4444;
+  --color-blocked: #475569;
+
+  --font-heading: 'Outfit', sans-serif;
+  --font-body: 'Plus Jakarta Sans', sans-serif;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: var(--bg-dark);
+  color: var(--text-main);
+  font-family: var(--font-body);
+  overflow-x: hidden;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Moving Background Animation */
+@keyframes slowPanBackground {
+  0% {
+    background-position: 0% 0%;
+    transform: scale(1.0);
+  }
+  50% {
+    background-position: 100% 50%;
+    transform: scale(1.08);
+  }
+  100% {
+    background-position: 0% 0%;
+    transform: scale(1.0);
+  }
+}
+
+.moving-bg {
+  position: fixed;
+  top: -5%;
+  left: -5%;
+  width: 110vw;
+  height: 110vh;
+  z-index: -1;
+  background-image: 
+    linear-gradient(to bottom, rgba(9, 12, 18, 0.80), rgba(9, 12, 18, 0.94)),
+    url('/background.jpeg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  animation: slowPanBackground 32s ease-in-out infinite alternate;
+  pointer-events: none;
+  will-change: transform;
+}
+
+/* MASTERPIECE SPORTS INTRO ANIMATIONS */
+@keyframes ultraLogoDrop {
+  0% {
+    opacity: 0;
+    transform: scale(3.5) translateY(-100px) rotateX(45deg);
+    filter: blur(20px) brightness(2);
+  }
+  40% {
+    opacity: 1;
+    transform: scale(0.9) translateY(10px) rotateX(0deg);
+    filter: blur(0px) brightness(1.5);
+  }
+  70% {
+    transform: scale(1.05) translateY(-5px);
+    filter: brightness(1.2);
+  }
+  100% {
+    transform: scale(1) translateY(0);
+    filter: brightness(1);
+  }
+}
+
+@keyframes shockwaveExpand {
+  0% {
+    width: 0px;
+    height: 0px;
+    opacity: 1;
+    border-width: 8px;
+  }
+  100% {
+    width: 500px;
+    height: 500px;
+    opacity: 0;
+    border-width: 1px;
+  }
+}
+
+@keyframes laserSweepHorizontal {
+  0% {
+    transform: translateX(-100%) rotate(-15deg);
+    opacity: 0;
+  }
+  50% {
+    opacity: 0.8;
+  }
+  100% {
+    transform: translateX(200%) rotate(-15deg);
+    opacity: 0;
+  }
+}
+
+@keyframes floodlightBeam {
+  0%, 100% {
+    opacity: 0.3;
+    transform: scale(1) rotate(0deg);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.2) rotate(5deg);
+  }
+}
+
+@keyframes floatParticle {
+  0% {
+    transform: translateY(0px) scale(0.8);
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-120px) scale(1.2);
+    opacity: 0;
+  }
+}
+
+.animate-ultra-logo {
+  animation: ultraLogoDrop 1.4s cubic-bezier(0.19, 1, 0.22, 1) forwards;
+}
+
+.animate-shockwave {
+  animation: shockwaveExpand 1.6s cubic-bezier(0.1, 0.8, 0.3, 1) infinite;
+}
+
+.animate-laser {
+  animation: laserSweepHorizontal 4s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+.animate-beam {
+  animation: floodlightBeam 3s ease-in-out infinite alternate;
+}
+
+.animate-particle {
+  animation: floatParticle 3.5s ease-in-out infinite;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+  letter-spacing: -0.02em;
+}
+
+/* Glassmorphic utilities */
+.glass-panel {
+  background: var(--bg-glass);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+}
+
+.glass-panel-neon {
+  background: var(--bg-glass);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--border-neon);
+  box-shadow: 0 0 25px rgba(143, 255, 0, 0.08);
+  border-radius: 16px;
+}
+
+/* Buttons */
+.btn-neon {
+  background: var(--neon-green);
+  color: #000000;
+  font-weight: 700;
+  font-family: var(--font-heading);
+  padding: 12px 24px;
+  border-radius: 12px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  box-shadow: 0 0 15px var(--neon-green-glow);
+}
+
+.btn-neon:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 30px rgba(143, 255, 0, 0.6);
+  background: #9EFF00;
+}
+
+.btn-neon:disabled {
+  background: #334155;
+  color: #94a3b8;
+  cursor: not-allowed;
+  box-shadow: none;
+  transform: none;
+}
+
+.btn-outline {
+  background: transparent;
+  color: var(--text-main);
+  font-weight: 600;
+  font-family: var(--font-heading);
+  padding: 12px 24px;
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.btn-outline:hover {
+  border-color: var(--neon-green);
+  color: var(--neon-green);
+  background: var(--neon-green-subtle);
+}
+
+/* Slot Grid status colors */
+.slot-badge-available {
+  background: rgba(143, 255, 0, 0.15);
+  border: 1px solid var(--neon-green);
+  color: var(--neon-green);
+}
+
+.slot-badge-holding {
+  background: rgba(245, 158, 11, 0.15);
+  border: 1px solid #F59E0B;
+  color: #FBBF24;
+}
+
+.slot-badge-booked {
+  background: rgba(239, 68, 68, 0.15);
+  border: 1px solid #EF4444;
+  color: #F87171;
+}
+
+.slot-badge-blocked {
+  background: rgba(71, 85, 105, 0.2);
+  border: 1px solid #475569;
+  color: #94A3B8;
+}
+
+/* Global Form Input Dark Styling Overrides (Fix for Bootstrap & Browser White Backgrounds) */
+.form-control,
+.form-select,
+input,
+select,
+textarea {
+  background-color: rgba(13, 17, 23, 0.95) !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+}
+
+.form-control:focus,
+.form-select:focus,
+input:focus,
+select:focus,
+textarea:focus {
+  background-color: rgba(13, 17, 23, 1) !important;
+  color: #ffffff !important;
+  border-color: #8FFF00 !important;
+  box-shadow: 0 0 15px rgba(143, 255, 0, 0.4) !important;
+  outline: none !important;
+}
+
+.form-control::placeholder,
+input::placeholder,
+textarea::placeholder {
+  color: #94a3b8 !important;
+  opacity: 1 !important;
+}
+
+select option {
+  background-color: #111622 !important;
+  color: #ffffff !important;
+}
+
+/* Browser Chrome/Safari/Edge Autofill Override */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active,
+textarea:-webkit-autofill,
+textarea:-webkit-autofill:hover,
+textarea:-webkit-autofill:focus,
+textarea:-webkit-autofill:active,
+select:-webkit-autofill,
+select:-webkit-autofill:hover,
+select:-webkit-autofill:focus,
+select:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 1000px #0d1117 inset !important;
+  -webkit-text-fill-color: #ffffff !important;
+  caret-color: #ffffff !important;
+  border-color: #8FFF00 !important;
+  transition: background-color 5000s ease-in-out 0s;
+}
+

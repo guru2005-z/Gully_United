@@ -1,0 +1,7 @@
+target/
+.maven/
+*.log
+.env
+*.yml
+*.yaml
+application.yml

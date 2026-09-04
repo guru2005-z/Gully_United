@@ -1,0 +1,25 @@
+# Dependencies & Build
+node_modules/
+target/
+dist/
+dist-ssr/
+.maven/
+
+# Logs
+*.log
+logs/
+
+# Environment & Secrets
+.env
+.env.local
+*.env
+application.yml
+*.yml
+*.yaml
+
+# IDE & System
+.vscode/
+.idea/
+.DS_Store
+*.suo
+*.sln
