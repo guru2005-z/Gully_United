@@ -54,8 +54,8 @@ public class SecurityConfig {
             .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/v1/auth/**", "/auth/**", "/h2-console/**").permitAll()
-                .requestMatchers("/api/v1/admin/**", "/admin/**").hasRole("ADMIN")
+                .requestMatchers("/auth/**", "/admin/reset-slots", "/payments/**", "/h2-console/**").permitAll()
+                .requestMatchers("/admin/**").hasRole("ADMIN")
                 .anyRequest().permitAll()
             );
 

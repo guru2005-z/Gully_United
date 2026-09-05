@@ -102,6 +102,17 @@ public class SlotService {
         return convertToDto(updated);
     }
 
+    @Transactional
+    public void resetAllSlots() {
+        List<Slot> slots = slotRepository.findAll();
+        for (Slot slot : slots) {
+            if (!"BLOCKED".equalsIgnoreCase(slot.getStatus())) {
+                slot.setStatus("AVAILABLE");
+            }
+        }
+        slotRepository.saveAll(slots);
+    }
+
     private SlotDto convertToDto(Slot slot) {
         boolean isPeak = slot.getStartTime().contains("PM") && !slot.getStartTime().startsWith("12") && !slot.getStartTime().startsWith("01") && !slot.getStartTime().startsWith("02") && !slot.getStartTime().startsWith("03") && !slot.getStartTime().startsWith("04");
         return new SlotDto(

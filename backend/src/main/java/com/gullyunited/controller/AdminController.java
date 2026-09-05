@@ -64,4 +64,14 @@ public class AdminController {
         SlotDto updated = slotService.toggleBlockSlot(id);
         return ResponseEntity.ok(updated);
     }
+
+    @PostMapping("/reset-slots")
+    public ResponseEntity<java.util.Map<String, Object>> resetAllSlots() {
+        bookingService.clearTestBookings();
+        slotService.resetAllSlots();
+        java.util.Map<String, Object> res = new java.util.HashMap<>();
+        res.put("success", true);
+        res.put("message", "All test bookings cleared and slots reset to AVAILABLE!");
+        return ResponseEntity.ok(res);
+    }
 }

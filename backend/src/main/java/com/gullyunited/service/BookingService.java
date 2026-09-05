@@ -125,4 +125,10 @@ public class BookingService {
     public Optional<Booking> getBookingByReference(String reference) {
         return bookingRepository.findByBookingReference(reference);
     }
+
+    @Transactional
+    public void clearTestBookings() {
+        bookingRepository.deleteAll();
+        slotHoldRepository.deleteAll();
+    }
 }
