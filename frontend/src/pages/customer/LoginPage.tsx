@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Shield, User, Phone, Key, ArrowRight, UserPlus, Lock, AlertCircle } from 'lucide-react';
-import { api } from '../../services/api';
+import { supabaseAuth } from '../../services/supabaseAuth';
 
 export const LoginPage: React.FC = () => {
   const navigate = useNavigate();
@@ -21,7 +21,7 @@ export const LoginPage: React.FC = () => {
     e.preventDefault();
     setCustomerError(null);
     try {
-      const res = await api.loginUser(customerPhone, customerPassword);
+      const res = await supabaseAuth.signInUser(customerPhone, customerPassword);
       if (res && res.success) {
         localStorage.setItem('gully_customer_phone', res.phone || customerPhone);
         localStorage.setItem('gully_customer_name', res.name || 'Player');

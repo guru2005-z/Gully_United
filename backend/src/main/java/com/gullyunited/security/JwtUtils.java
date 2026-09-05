@@ -55,16 +55,41 @@ public class JwtUtils {
     }
 
     public String getPhoneFromToken(String token) {
-        return getClaimsFromToken(token).getSubject();
+        try {
+            Claims claims = getClaimsFromToken(token);
+            if (claims.get("phone") != null && !claims.get("phone").toString().trim().isEmpty()) {
+                return claims.get("phone").toString();
+            }
+            if (claims.get("user_metadata") instanceof Map) {
+                Map<?, ?> metadata = (Map<?, ?>) claims.get("user_metadata");
+                if (metadata.get("phone") != null) {
+                    return metadata.get("phone").toString();
+                }
+            }
+            return claims.getSubject();
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     public Long getUserIdFromToken(String token) {
-        Number userIdNumber = (Number) getClaimsFromToken(token).get("userId");
-        return userIdNumber != null ? userIdNumber.longValue() : null;
+        try {
+            Claims claims = getClaimsFromToken(token);
+            Number userIdNumber = (Number) claims.get("userId");
+            return userIdNumber != null ? userIdNumber.longValue() : null;
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     public String getRoleFromToken(String token) {
-        return (String) getClaimsFromToken(token).get("role");
+        try {
+            Claims claims = getClaimsFromToken(token);
+            String role = (String) claims.get("role");
+            return role != null ? role : "CUSTOMER";
+        } catch (Exception e) {
+            return "CUSTOMER";
+        }
     }
 
     public boolean validateToken(String token) {

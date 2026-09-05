@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { User, Phone, Mail, Lock, ShieldCheck, ArrowRight, Sparkles, AlertCircle, Loader2 } from 'lucide-react';
-import { api } from '../../services/api';
+import { supabaseAuth } from '../../services/supabaseAuth';
 
 export const RegisterPage: React.FC = () => {
   const navigate = useNavigate();
@@ -25,7 +25,7 @@ export const RegisterPage: React.FC = () => {
     }
     setLoading(true);
     try {
-      const response = await api.registerUser(formData);
+      const response = await supabaseAuth.signUpUser(formData);
       if (response && response.success) {
         localStorage.setItem('gully_customer_name', response.name || formData.fullName);
         localStorage.setItem('gully_customer_phone', response.phone || formData.phoneNumber);
