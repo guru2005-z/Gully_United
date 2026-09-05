@@ -95,5 +95,39 @@ export const supabaseAuth = {
     } catch (e) {
       return null;
     }
+  },
+
+  async signInWithPhoneOtp(phone: string) {
+    try {
+      const formattedPhone = phone.startsWith('+') ? phone : `+91${phone}`;
+      const { data, error } = await supabase.auth.signInWithOtp({
+        phone: formattedPhone
+      });
+      if (error) {
+        return { success: false, message: error.message };
+      }
+      return { success: true, message: 'OTP sent to ' + phone, data };
+    } catch (e: any) {
+      return { success: false, message: e.message || 'Failed to send phone OTP' };
+    }
+  },
+
+  async verifyPhoneOtp(phone: string, token: string) {
+    try {
+      const formattedPhone = phone.startsWith('+') ? phone : `+91${phone}`;
+      const { data, error } = await supabase.auth.verifyOtp({
+        phone: formattedPhone,
+        token: token,
+        type: 'sms'
+      });
+      if (error || !data.session) {
+        return { success: false, message: error?.message || 'Invalid phone OTP' };
+      }
+      localStorage.setItem('gully_auth_token', data.session.access_token);
+      localStorage.setItem('gully_supabase_jwt', data.session.access_token);
+      return { success: true, message: 'Phone OTP verified', session: data.session };
+    } catch (e: any) {
+      return { success: false, message: e.message || 'Error verifying phone OTP' };
+    }
   }
 };
