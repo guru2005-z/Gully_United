@@ -48,6 +48,79 @@ class ApiClient {
     }
   }
 
+  async sendOtp(phoneNumber: string): Promise<{ success: boolean; message: string }> {
+    try {
+      const response = await axios.post(`${API_BASE_URL}/auth/send-otp`, { phoneNumber });
+      return response.data;
+    } catch (error: any) {
+      return {
+        success: false,
+        message: error.response?.data?.message || 'Failed to send SMS OTP'
+      };
+    }
+  }
+
+  async verifyOtp(phoneNumber: string, otpCode: string): Promise<{ success: boolean; message: string; token?: string }> {
+    try {
+      const response = await axios.post(`${API_BASE_URL}/auth/verify-otp`, { phoneNumber, otpCode });
+      if (response.data.token) {
+        localStorage.setItem('gully_auth_token', response.data.token);
+      }
+      return response.data;
+    } catch (error: any) {
+      return {
+        success: false,
+        message: error.response?.data?.message || 'Invalid or expired OTP code'
+      };
+    }
+  }
+
+  async createRazorpayOrder(amount: number, holdId: string): Promise<{ success: boolean; orderId?: string; razorpayKeyId?: string; message?: string }> {
+    try {
+      const response = await axios.post(`${API_BASE_URL}/payments/create-order`, { amount, holdId });
+      return response.data;
+    } catch (error: any) {
+      return {
+        success: false,
+        message: error.response?.data?.message || 'Failed to generate payment order'
+      };
+    }
+  }
+
+  async verifyRazorpayPayment(payload: {
+    orderId: string;
+    paymentId: string;
+    signature: string;
+    holdId: string;
+    customerName: string;
+    customerPhone: string;
+    customerEmail?: string;
+  }): Promise<Booking> {
+    const response = await axios.post(`${API_BASE_URL}/payments/verify-signature`, payload);
+    const b = response.data;
+    return {
+      id: String(b.id || b.bookingReference),
+      bookingCode: b.bookingReference || b.bookingCode,
+      slot: {
+        id: b.slot?.id || 1,
+        startTime: b.startTime || b.slot?.startTime || '06:00 AM',
+        endTime: b.endTime || b.slot?.endTime || '07:00 AM',
+        price: b.amount || b.slot?.price || 299,
+        isPeakHour: false,
+        status: 'BOOKED'
+      },
+      bookingDate: b.bookingDate,
+      customerName: b.user?.name || payload.customerName,
+      customerPhone: b.user?.phone || payload.customerPhone,
+      customerEmail: b.user?.email || payload.customerEmail || '',
+      amountPaid: b.amount,
+      razorpayPaymentId: b.paymentStatus || 'PAID',
+      qrCodeData: b.qrCodeSignature || `${b.bookingReference}|${payload.customerPhone}|${b.bookingDate}`,
+      status: b.bookingStatus || 'CONFIRMED',
+      createdAt: b.createdAt || new Date().toISOString()
+    };
+  }
+
   async getSlotsForDate(dateStr: string): Promise<TimeSlot[]> {
     try {
       const response = await axios.get(`${API_BASE_URL}/slots?date=${dateStr}`);

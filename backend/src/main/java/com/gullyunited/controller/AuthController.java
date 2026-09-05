@@ -1,5 +1,8 @@
 package com.gullyunited.controller;
 
+import com.gullyunited.dto.OtpResponse;
+import com.gullyunited.dto.SendOtpRequest;
+import com.gullyunited.dto.VerifyOtpRequest;
 import com.gullyunited.dto.AuthResponse;
 import com.gullyunited.dto.LoginRequest;
 import com.gullyunited.dto.RegisterRequest;
@@ -36,6 +39,26 @@ public class AuthController {
             return ResponseEntity.ok(response);
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+        }
+    }
+
+    @PostMapping("/send-otp")
+    public ResponseEntity<OtpResponse> sendOtp(@Valid @RequestBody SendOtpRequest request) {
+        OtpResponse response = userService.sendOtp(request);
+        if (response.isSuccess()) {
+            return ResponseEntity.ok(response);
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
+    }
+
+    @PostMapping("/verify-otp")
+    public ResponseEntity<OtpResponse> verifyOtp(@Valid @RequestBody VerifyOtpRequest request) {
+        OtpResponse response = userService.verifyOtp(request);
+        if (response.isSuccess()) {
+            return ResponseEntity.ok(response);
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
     }
 }

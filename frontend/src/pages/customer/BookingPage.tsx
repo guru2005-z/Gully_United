@@ -67,7 +67,7 @@ export const BookingPage: React.FC = () => {
     if (slot.status !== 'AVAILABLE') return;
     setBookingError(null);
 
-    const phoneToUse = customerPhone || '9876543210';
+    const phoneToUse = customerPhone || localStorage.getItem('gully_customer_phone') || 'GUEST';
     const dateStr = format(selectedDate, 'yyyy-MM-dd');
 
     try {
@@ -100,15 +100,70 @@ export const BookingPage: React.FC = () => {
       localStorage.setItem('gully_customer_name', customerName);
       localStorage.setItem('gully_customer_phone', customerPhone);
 
-      const booking = await api.confirmBooking(holdId, {
-        name: customerName,
-        phone: customerPhone,
-        email: customerEmail,
-      });
+      // Create Razorpay Order
+      const orderRes = await api.createRazorpayOrder(selectedSlot.price, holdId);
 
-      navigate(`/confirmation/${booking.bookingCode}`);
+      if (!orderRes.success || !orderRes.orderId) {
+        // Direct fallback confirm if order generation failed
+        const booking = await api.confirmBooking(holdId, {
+          name: customerName,
+          phone: customerPhone,
+          email: customerEmail,
+        });
+        navigate(`/confirmation/${booking.bookingCode}`);
+        return;
+      }
+
+      const razorpayKey = orderRes.razorpayKeyId || 'rzp_test_gully_united_key';
+
+      // Launch official Razorpay Checkout modal if loaded
+      if (typeof window !== 'undefined' && (window as any).Razorpay) {
+        const options = {
+          key: razorpayKey,
+          amount: selectedSlot.price * 100,
+          currency: 'INR',
+          name: 'Gully United Cricket Turf',
+          description: `Booking for ${format(selectedDate, 'MMM dd, yyyy')} (${selectedSlot.startTime} - ${selectedSlot.endTime})`,
+          image: '/logo1.jpeg',
+          order_id: orderRes.orderId,
+          handler: async (response: any) => {
+            try {
+              const booking = await api.verifyRazorpayPayment({
+                orderId: response.razorpay_order_id || orderRes.orderId!,
+                paymentId: response.razorpay_payment_id || 'pay_sim_' + Date.now(),
+                signature: response.razorpay_signature || 'simulated_signature',
+                holdId: holdId,
+                customerName: customerName,
+                customerPhone: customerPhone,
+                customerEmail: customerEmail
+              });
+              navigate(`/confirmation/${booking.bookingCode}`);
+            } catch (err: any) {
+              setBookingError(err.message || 'Payment verification failed.');
+            }
+          },
+          prefill: {
+            name: customerName,
+            contact: customerPhone,
+            email: customerEmail
+          },
+          theme: {
+            color: '#8FFF00'
+          }
+        };
+
+        const rzp = new (window as any).Razorpay(options);
+        rzp.open();
+      } else {
+        const booking = await api.confirmBooking(holdId, {
+          name: customerName,
+          phone: customerPhone,
+          email: customerEmail,
+        });
+        navigate(`/confirmation/${booking.bookingCode}`);
+      }
     } catch (err: any) {
-      setBookingError(err.message || 'Failed to process booking');
+      setBookingError(err.message || 'Failed to process payment & booking');
     } finally {
       setIsSubmitting(false);
     }

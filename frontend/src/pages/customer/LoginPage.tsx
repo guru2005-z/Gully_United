@@ -8,13 +8,13 @@ export const LoginPage: React.FC = () => {
   const [portalType, setPortalType] = useState<'CUSTOMER' | 'ADMIN'>('CUSTOMER');
 
   // Customer state
-  const [customerPhone, setCustomerPhone] = useState('9876543210');
-  const [customerPassword, setCustomerPassword] = useState('player123');
+  const [customerPhone, setCustomerPhone] = useState('');
+  const [customerPassword, setCustomerPassword] = useState('');
   const [customerError, setCustomerError] = useState<string | null>(null);
 
   // Admin state
-  const [adminUsername, setAdminUsername] = useState('admin');
-  const [adminPassword, setAdminPassword] = useState('admin123');
+  const [adminUsername, setAdminUsername] = useState('');
+  const [adminPassword, setAdminPassword] = useState('');
   const [adminError, setAdminError] = useState<string | null>(null);
 
   const handleCustomerLogin = async (e: React.FormEvent) => {
@@ -30,13 +30,10 @@ export const LoginPage: React.FC = () => {
         }
         navigate('/my-bookings');
       } else {
-        setCustomerError(res?.message || 'Invalid credentials');
+        setCustomerError(res?.message || 'Invalid credentials. Please check your phone number and password.');
       }
     } catch (err: any) {
-      // Fallback for demo OTP mode if backend endpoint is unavailable
-      localStorage.setItem('gully_customer_phone', customerPhone);
-      localStorage.setItem('gully_customer_name', 'Rahul Verma');
-      navigate('/my-bookings');
+      setCustomerError(err?.response?.data?.message || err?.message || 'Server connection error. Please check your network.');
     }
   };
 
@@ -46,7 +43,7 @@ export const LoginPage: React.FC = () => {
       localStorage.setItem('gully_admin_jwt', 'JWT-ADMIN-AUTHENTICATED-BEARER-TOKEN');
       navigate('/admin/dashboard');
     } else {
-      setAdminError('Invalid admin credentials. (Default staff login: admin / admin123)');
+      setAdminError('Invalid admin credentials. Please enter authorized staff credentials.');
     }
   };
 
@@ -207,11 +204,6 @@ export const LoginPage: React.FC = () => {
             <button type="submit" className="btn-neon w-full py-3.5 font-extrabold flex items-center justify-center gap-2">
               Authenticate & Open Admin Dashboard <ArrowRight className="w-4 h-4" />
             </button>
-
-            <div className="p-3 rounded-xl bg-white/5 border border-white/10 text-[11px] text-slate-400 text-center space-y-1">
-              <p>Demo Staff Credentials:</p>
-              <p className="font-mono text-white font-bold">Username: admin | Password: admin123</p>
-            </div>
           </form>
 
         </div>
